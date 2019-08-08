@@ -69,27 +69,23 @@ int firstHour = 11 * 60; // 8AM * 60 min
 int lastHour = 21 * 60; // 22
 int extra = 0;
 
-#define SMOOTHSTEP(x) ((x) * (x) * (3 - 2 * (x))) //SMOOTHSTEP expression.
-void loop() { 
-  
+void loop() {   
   beat = ease(digitalRead(A0) * 1.0, beat, .001);
-
+  
   if (millis() > lastSave + saveRate) {
     log();
-//    extra = (extra+10) % 600;     
   }
-//currentTime
-  int currentColorId = constrain(map(currentTime, firstHour, lastHour, 0, 60), 0, 60);
-  
+
+  int currentColorId = 25; // constrain(map(currentTime, firstHour, lastHour, 0, 60), 0, 60);  
   float timestep = millis() * .0005;
   
 //  g = constrain(colors[currentColorId][0] * ( (sin(timestep ) + 1) / 2.0 * beat ),0,255);
 //  r = constrain(colors[currentColorId][1] * ( (sin(timestep ) + 1) / 2.0 * beat ),0,255);
 //  b = constrain(colors[currentColorId][2] * ( (sin(timestep ) + 1) / 2.0 * beat ),0, 255);
 
-  g = constrain(colors[currentColorId][0] * beat ,0,255);
-  r = constrain(colors[currentColorId][1] * beat ,0,255);
-  b = constrain(colors[currentColorId][2] * beat ,0, 255);
+  g = constrain(colors[currentColorId][0] * 1.0 * beat ,0,255);
+  r = constrain(colors[currentColorId][1] * 1.0 * beat ,0,255);
+  b = constrain(colors[currentColorId][2] * 1.0 * beat ,0, 255);
   
   analogWrite(REDPIN, r);
   analogWrite(GREENPIN, g);
@@ -144,6 +140,3 @@ void setupRTC() {
     //     rtc.adjust(DateTime(2019, 8, 3, 13, 40, 0));
   }
 }
-
-
-
