@@ -10,10 +10,6 @@ import toxi.util.*;
 import toxi.util.datatypes.*;
 import toxi.util.events.*;
 
-//void settings(){
-//  //fullScreen();
-//}
-
 
 import oscP5.*;
 import netP5.*;
@@ -143,9 +139,9 @@ void draw() {
   //rotateY(radians(ypr.y));
   //rotateZ(radians(ypr.z));
   
-  float[] axis = quat.toAxisAngle();
-  rotate(-axis[0], -axis[1], -axis[3], axis[2]);
-  println(axis);
+  //float[] axis = quat.toAxisAngle();
+  //rotate(-axis[0], -axis[1], -axis[3], axis[2]);
+  escamas1.update();
   escamas1.dibujar();
   
   

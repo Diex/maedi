@@ -1,59 +1,59 @@
 class Escamas {
 
-  float x;
-  float y;
-  float velocidad;
-  float velocidad2;
+  PVector pos = new PVector();
+  PVector vel = new PVector();
+  
   float angulo;
-  float direccion;
-  float c1;
-  float c2;
-  float varAux;  
-  float esc;
-  float contador;
+  //float direccion;
+  //float c1;
+  //float c2;
+  //float varAux;  
+  //float esc;
+  //float contador;
 
   Escamas() {
-    fill(0, 0);
-    x=width/2;
-    y=height/4;
-    contador=0;
-    velocidad=0.2;
-    velocidad2=0.3;
-    angulo=random(360);
-    direccion=-1;
-    c1=10;
-    c2=30;
-    varAux=2;  
-    esc=0.5;
-  }
-
-  void angle(float alpha){
-    angulo = alpha;
-  }
-  void update() {
-    contador();
     
-    //angulo += random(-0.1, 0.1);
-    x+= cos(radians(angulo)) *velocidad2;
-    y+= sin(radians(angulo)) *velocidad2;
-
-    limite();
+    
+    angulo = random(360);
+    origin.set(width/2, height/2, 200);
+    pos.set(0, 0, -100);
+    vel.set(random(-3,3), random(-3,3),0);
   }
 
-  void limite() {
-    if (x<-10) {
-      x=width+10;
-    }
-    if (x>width+10) {
-      x=-10;
-    }    
-    ///limite en y   
-    if (y<-10) {
-      y=height+10;
-    }
-    if (y>height+10) {
-      y=-10;
-    }
+  void update() {
+    
+    pos.add(vel);
+    println(pos);
+  }
+
+PVector origin = new PVector();
+
+  void limites() {
+    if(screenX(pos.x, pos.y, pos.z) < 0 || screenX(pos.x, pos.y, pos.z) > width){
+      pos.x = pos.x * -1;     
+      //println("ouch...");
+    };
+    
+    
+    if(screenY(pos.x, pos.y, pos.z) < 0 || screenY(pos.x, pos.y, pos.z) > height){
+      pos.y = pos.y * -1;     
+      //println("ouch...");
+    };
+    
+    
+    //if (x<-10) {
+    //  x=width+10;
+    //}
+    //if (x>width+10) {
+    //  x=-10;
+    //}    
+    /////limite en y   
+    //if (y<-10) {
+    //  y=height+10;
+    //}
+    //if (y>height+10) {
+    //  y=-10;
+    //}
   }
 
   void transparencia() {
@@ -64,32 +64,32 @@ class Escamas {
     //}
     //c2=map(c1, 0, 500, 5, 10);
     
-    stroke(0, c2);
+    //stroke(0, c2);
     //println(c2);
     // println(contador );
   }
   
   
-  void contador() {
-    if (contador>=15)contador=0; 
-    else contador++;
-  }
+  //void contador() {
+  //  if (contador>=15)contador=0; 
+  //  else contador++;
+  //}
 
   void escala() {
     //esc=(c2/15);
 
-    scale(esc);
+    //scale(esc);
     //println(esc);
   }
 
-  void transformar() {
-    translate(x, y);
-    rotate(angulo);
-  }
+  //void transformar() {
+  //  //translate(x, y);
+  //  rotate(angulo);
+  //}
 
   
   void dibujar() {
-  
+    limites();
     pushMatrix();
     
     //transparencia();
@@ -119,8 +119,11 @@ class Escamas {
     baricenter.mult(largo);
     
     
-    translate(-baricenter.x, -baricenter.y, -baricenter.z);
     
+    
+    move();
+    pushMatrix();
+    translate(-baricenter.x, -baricenter.y, -baricenter.z);
     lineFromPoints(a, b);
     lineFromPoints(b, c);
     lineFromPoints(c, a);
@@ -128,7 +131,7 @@ class Escamas {
     lineFromPoints(h, a);
     lineFromPoints(h, b);
     lineFromPoints(h, c);
-    
+    popMatrix();
     
     //line(0 * largo  , 0 * largo      , 0 * largo, 1 * largo    , 0 * largo      , 0 * largo);
     //line(1 * largo  , 0 * largo      , 0 * largo, 0.5 * largo  , 0.866 * largo  , 0 * largo);
@@ -144,5 +147,9 @@ class Escamas {
   
   void lineFromPoints(PVector aPoint, PVector anotherPoint){    
     line(aPoint.x, aPoint.y, aPoint.z, anotherPoint.x, anotherPoint.y, anotherPoint.z);  
+  }
+  
+  void move(){
+    translate(pos.x, pos.y, pos.z);
   }
 }
