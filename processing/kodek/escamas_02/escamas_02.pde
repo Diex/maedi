@@ -64,13 +64,16 @@ void setup() {
 
 public void imu(float quant_w, float quant_x, float quant_y, float quant_z) {
   //println(quant_w, quant_x, quant_y, quant_z);
-  quat.set(quant_w, quant_x, quant_y, quant_z);
+  //quat.set(quant_w, quant_x, quant_y, quant_z);
+  escamas1.orientation.set(quant_w, quant_x, quant_y, quant_z);
    
 }
 
 public void realacc(float quant_x, float quant_y, float quant_z) {
   //println(quant_w, quant_x, quant_y, quant_z);
-  acc.set(quant_x, quant_y, quant_z);
+  //acc.set(quant_x, quant_y, quant_z);
+  // K4 default: -8871.0 -578.0 3826.0
+  escamas1.setAcceleration(quant_x +8871, quant_y+578, quant_z-3826);
 }
 
 public void ypr(float quant_x, float quant_y, float quant_z) {
@@ -139,8 +142,7 @@ void draw() {
   //rotateY(radians(ypr.y));
   //rotateZ(radians(ypr.z));
   
-  //float[] axis = quat.toAxisAngle();
-  //rotate(-axis[0], -axis[1], -axis[3], axis[2]);
+
   escamas1.update();
   escamas1.dibujar();
   
