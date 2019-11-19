@@ -11,13 +11,15 @@ class Escamas {
   //float esc;
   //float contador;
 
+  float zmax = 500;
+  
   Escamas() {
     
     
     angulo = random(360);
-    origin.set(width/2, height/2, 200);
-    pos.set(0, 0, -100);
-    vel.set(random(-3,3), random(-3,3),0);
+    origin.set(width/2, height/2, -500);
+    pos.set(0, 0, 500);
+    vel.set(random(-1,1), random(-1,1), random(-10,10));
   }
 
   void update() {
@@ -37,6 +39,14 @@ PVector origin = new PVector();
     
     if(screenY(pos.x, pos.y, pos.z) < 0 || screenY(pos.x, pos.y, pos.z) > height){
       pos.y = pos.y * -1;     
+      //println("ouch...");
+    };
+    
+    if(pos.z < origin.z - zmax){
+        pos.z = origin.z + zmax;
+    }
+      if(pos.z > origin.z + zmax){
+      pos.z = origin.z - zmax;     
       //println("ouch...");
     };
     
