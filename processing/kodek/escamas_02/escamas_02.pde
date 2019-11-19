@@ -122,37 +122,18 @@ void soundControl()
 
 void draw() {
  
-  background(255);
-  //ypr.set(360 * noise(value,1,1), 360 * noise(1,value,1),360 * noise(1,1,value));
-  //acc.set(1000 * noise(value,2,2), 1000 * noise(2,value,2), 1000 * noise(2,2,value));
-  
-  //float value = frameCount * 0.0001;
-  //float acc2 = 100 * (mouseX - pmouseX);
-  
-  //escamas1.c2 = map(abs(acc2), 0, 2000, 50, 255);
-  //println(ypr, acc2);
+  //background(255);
   
   pushMatrix();
   translate(width/2, height/2);
   fill(0);
   
-  ellipse(0,0, 10, 10);
-  
-  //rotateX(radians(ypr.x));
-  //rotateY(radians(ypr.y));
-  //rotateZ(radians(ypr.z));
-  
-
+  //ellipse(0,0, 10, 10);
   escamas1.update();
   escamas1.dibujar();
   
   
   //soundControl();
-  //escamas1.angle(ypr.y);
-  //escamas1.update();
-  
-  //translate(width/2, height/2);
-  
   
   popMatrix();
   

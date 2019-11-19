@@ -5,25 +5,29 @@ class Escamas {
 
   float angulo;
   Quaternion orientation = new Quaternion();
-  
+  PVector origin = new PVector();
+
   float zmax = 600;
+  PVector pAccel = new PVector();
+  float pAvg = 0.0;
 
+  float largo = 10;
+
+  float maxLargo = 500;
+  float maxAcc = 500;
+  
+  
   Escamas() {
-
-
     angulo = random(360);
     origin.set(width/2, height/2, -3000);
-    pos.set(0, 0, -1000);
-    //vel.set(random(-1, 1), random(-1, 1), random(-10, 10));
-    
+    pos.set(random(-width/width), random(-height/height), -1000);
+    vel.set(random(-2, 2), random(-2, 2), random(-5, 5));
   }
 
   void update() {    
     pos.add(vel);
-    
   }
 
-  PVector origin = new PVector();
 
   void limites() {
     if (screenX(pos.x, pos.y, pos.z) < 0 || screenX(pos.x, pos.y, pos.z) > width) {
@@ -43,65 +47,46 @@ class Escamas {
   }
 
   void transparencia() {
-
   }
 
-  PVector pAccel = new PVector();
-  float pAvg = 0.0;
-  
-  float maxLargo = 1000;
-  
-  void setAcceleration(float x, float y, float z){
-    
+
+  void setAcceleration(float x, float y, float z) {
+
     float dx = pAccel.x - x;
     float dy = pAccel.y - y;
     float dz = pAccel.z - z;
-    
-    
+
+
     pAccel.set(x, y, z);
-    
-   
-    
-   float avgAcc = (dx + dy + dz) / 3;
-   
-   float dAvg = pAvg - avgAcc;
-   
-   float maxAcc = 500;
-   
-   pAvg = ease(avgAcc, pAvg, dAvg >= 0 ? 0.99 : 0.00001);
-   
-   println(dx, dy, dz, "avg: ", map(abs(pAvg), 0, maxAcc, 0.0, 1.0));
-    
-    
+
+    float avgAcc = (dx + dy + dz) / 3;
+    float dAvg = pAvg - abs(avgAcc);
+
+    pAvg = ease(avgAcc, pAvg, dAvg >= 0 ? 0.995 : 0.2);
+
     this.scale(constrain( map(abs(pAvg), 0, maxAcc, 0, maxLargo), maxLargo/10, maxLargo)); 
-    
-    //println((norm.x + norm.y + norm.z) / 3, largo);
-    
-    
+    //println(dx, dy, dz, "avg: ", map(abs(pAvg), 0, maxAcc, 0.0, 1.0));
   }
-  
-  
-  float ease(float current, float prev, float factor){
+
+
+  float ease(float current, float prev, float factor) {
     return current * (1 - factor) + prev * factor;
   }
-  
-  void scale(float value){
-    this.largo = value;    
+
+  void scale(float value) {
+    this.largo = value;
   }
 
-  float largo = 10;
   void dibujar() {
     limites();
-    
-    
-    
-    
+
+
     pushMatrix();
 
-    
+
 
     noFill();
-    stroke(0);
+    stroke(0, 10);
 
 
     // base de la piramide
@@ -124,9 +109,9 @@ class Escamas {
     move();
     applyRot();
     translate(-baricenter.x, -baricenter.y, -baricenter.z);
-    
-    
-    
+
+
+
     lineFromPoints(a, b);
     lineFromPoints(b, c);
     lineFromPoints(c, a);
@@ -138,12 +123,12 @@ class Escamas {
     popMatrix();
   }
 
-  void applyRot(){
+  void applyRot() {
     float[] axis = orientation.toAxisAngle();
     rotate(-axis[0], -axis[1], -axis[3], axis[2]);
   }
-  
-  
+
+
   void lineFromPoints(PVector aPoint, PVector anotherPoint) {    
     line(aPoint.x, aPoint.y, aPoint.z, anotherPoint.x, anotherPoint.y, anotherPoint.z);
   }
