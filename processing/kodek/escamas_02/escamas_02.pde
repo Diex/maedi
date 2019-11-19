@@ -27,16 +27,19 @@ Minim       minim;
 AudioOutput out;
 Oscil       wave;
 
-
-
-
+Escamas escamas1;
+Escamas escamas2;
+Escamas escamas3;
 Escamas escamas4;
 
 
-
 void setup() {
-  size(800, 600, P3D);
+  //size(800, 600, P3D);
+  fullScreen(P3D);
 
+  escamas1 = new Escamas("k1");
+  escamas2 = new Escamas("k2");
+  escamas3 = new Escamas("k3");
   escamas4 = new Escamas("k4");
 
   /* start oscP5, listening for incoming messages at port 9999 */
@@ -44,7 +47,15 @@ void setup() {
 
   oscP5.plug(escamas4, "imu", "/k4/imuquat");
   oscP5.plug(escamas4, "realacc", "/k4/realacc");
-  
+
+  oscP5.plug(escamas3, "imu", "/k3/imuquat");
+  oscP5.plug(escamas3, "realacc", "/k3/realacc");
+
+  oscP5.plug(escamas2, "imu", "/k2/imuquat");
+  oscP5.plug(escamas2, "realacc", "/k2/realacc");
+
+  oscP5.plug(escamas1, "imu", "/k1/imuquat");
+  oscP5.plug(escamas1, "realacc", "/k1/realacc");
 
 
   minim = new Minim(this);
@@ -73,7 +84,7 @@ void plotAngle() {
   stroke(0);
 
 
-  
+
 
   popStyle();
 }
@@ -97,24 +108,34 @@ void soundControl()
 
 
 void draw() {
- 
+
   //background(255);
-  
+
   pushMatrix();
   translate(width/2, height/2);
   fill(0);
+
   
-  //ellipse(0,0, 10, 10);
+  escamas1.update();
+  escamas1.dibujar();
+
+  escamas2.update();
+  escamas2.dibujar();
+  
+  escamas3.update();
+  escamas3.dibujar();
+
+  
   escamas4.update();
   escamas4.dibujar();
-  
-  
+
+
   //soundControl();
-  
+
   popMatrix();
-  
+
   //plotAngle();
-  
+
   noStroke();
   //fill(255,1);
   //rect(-10,-10, width+10, height+10);
@@ -122,6 +143,9 @@ void draw() {
 
 void keyPressed()
 { 
+  
+    if(key == ' ') background(255);
+    
   switch( key )
   {
   case '1': 

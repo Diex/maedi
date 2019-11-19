@@ -13,15 +13,15 @@ class Escamas {
 
   float largo = 10;
 
-  float maxLargo = 500;
+  float maxLargo = 200;
   float maxAcc = 500;
 
   float alpha = 1;
-  float minAlpha = 3;
-  float maxAlpha = 15;
+  float minAlpha = 6;
+  float maxAlpha = 10;
 
 
-  float maxSpeed = 2;
+  float maxSpeed = 1;
 
   String name;
   
@@ -30,12 +30,9 @@ class Escamas {
     angulo = random(360);
     origin.set(width/2, height/2, -3000);
     pos.set(random(-width/width), random(-height/height), -1000);
-    vel.set(random(-2, 2), random(-2, 2), random(-5, 5));
   }
 
 
-  void transparencia() {
-  }
 
 
   void setAcceleration(float x, float y, float z) {
@@ -62,13 +59,14 @@ class Escamas {
 
     limites();
 
-    largo = constrain( map(abs(pAvg), 0, maxAcc, 0, maxLargo), maxLargo/10, maxLargo);
+    largo = constrain( map(abs(pAvg), 0, maxAcc, 0, maxLargo), maxLargo/40, maxLargo);
     alpha = constrain( map(abs(pAvg), maxAcc, 0, 0, maxAlpha), minAlpha, maxAlpha);
 
     pushMatrix();
     pushStyle();
 
     noFill();
+    strokeWeight(0.5);
     stroke(0, alpha);
 
 
@@ -162,6 +160,21 @@ class Escamas {
   public void realacc(float quant_x, float quant_y, float quant_z) {
     
     switch(name) {
+      case "k1":
+      // K4 default: -8871.0 -578.0 3826.0
+        setAcceleration(quant_x +8871, quant_y+578, quant_z-3826);
+      break;
+      
+      case "k2":
+      // K4 default: -8871.0 -578.0 3826.0
+        setAcceleration(quant_x +8871, quant_y+578, quant_z-3826);
+      break;
+      
+      case "k3":
+      // K4 default: -8871.0 -578.0 3826.0
+        setAcceleration(quant_x +8871, quant_y+578, quant_z-3826);
+      break;
+      
       case "k4":
       // K4 default: -8871.0 -578.0 3826.0
         setAcceleration(quant_x +8871, quant_y+578, quant_z-3826);
