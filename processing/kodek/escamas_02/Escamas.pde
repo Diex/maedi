@@ -18,21 +18,37 @@ class Escamas {
   PVector pAccel = new PVector();
   float maxAcc = 500;
   float pAvg = 0.0;
+  float thAvg = 1000;
 
   // esto es para poner una referencia para el loop en el sentido Z basicamente
   PVector origin = new PVector();
-  float zmax = 600;
+  float zmax = 300;
+  float zmin = -600;
 
-  Escamas(String name) {
+  SoundFile sf;
+  
+  Escamas(String name, SoundFile sf) {
     this.name = name;
     origin.set(width/2, height/2, -3000);
     pos.set(random(-width/width), random(-height/height), -1000);
+    reset(0);
+    this.sf = sf;
+    
+  }
+  
+  int cc = 0;
+   
+  void reset(int currentColor){    
+    cc = currentColor;
+    pos.set(random(width), random(height), random(zmin, zmax));    
   }
 
   void update() {    
     setVelocity();    
     pos.add(vel); 
-    println(name, pos, vel);
+    //println(name, pos, vel);
+    println(name, pAvg);
+    
   }
 
   void dibujar() {
@@ -47,23 +63,8 @@ class Escamas {
 
     noFill();
     strokeWeight(0.5);
-
-    // https://colorhunt.co/palette/162807
-    switch(name) {
-    case "k1":
-      stroke(#003f5c, alpha);      
-      break;
-    case "k2":
-      stroke(#472b62, alpha);      
-      break;
-    case "k3":
-      stroke(#bc4873, alpha);      
-      break;
-    case "k4":
-      stroke(#fb5b5a, alpha);      
-      break;
-    }
-
+    stroke(cc, alpha);
+    
     // base de la piramide
     // sacado de aca: https://www.youtube.com/watch?v=4HP49caCuWY
     PVector a = new PVector(0, 0, 0); 
@@ -159,8 +160,20 @@ class Escamas {
     float dAvg = pAvg - abs(avgAcc);
 
     pAvg = ease(avgAcc, pAvg, dAvg >= 0 ? 0.996 : 0.2);
+    
+    soundTrigger(pAvg);
+    
   }
 
+
+  void soundTrigger(float pAvg){
+    if(pAvg < thAvg) return;
+    
+    if(!sf.isPlaying()){
+      sf.play();
+      println(sf.percent());
+    }
+  }
 
   public void imu(float quant_w, float quant_x, float quant_y, float quant_z) {
     orientation.set(quant_w, quant_x, quant_y, quant_z);

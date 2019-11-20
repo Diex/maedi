@@ -9,23 +9,12 @@ import toxi.math.waves.*;
 import toxi.util.*;
 import toxi.util.datatypes.*;
 import toxi.util.events.*;
-
-
 import oscP5.*;
 import netP5.*;
-
-import ddf.minim.*;
-import ddf.minim.ugens.*;
+import processing.sound.*;
 
 
 OscP5 oscP5;
-
-
-
-
-Minim       minim;
-AudioOutput out;
-Oscil       wave;
 
 Escamas escamas1;
 Escamas escamas2;
@@ -33,14 +22,25 @@ Escamas escamas3;
 Escamas escamas4;
 
 
+SoundFile [] backgrounds = new SoundFile[3];
+
+
 void setup() {
   size(1280, 800, P3D);
   //fullScreen(P3D);
 
-  escamas1 = new Escamas("k1");
-  escamas2 = new Escamas("k2");
-  escamas3 = new Escamas("k3");
-  escamas4 = new Escamas("k4");
+  backgrounds[0] = new SoundFile(this, "back 1.wav");
+  backgrounds[1] = new SoundFile(this, "back 2.wav");
+  backgrounds[2] = new SoundFile(this, "back 3.wav");
+
+  
+  escamas1 = new Escamas("k1", new SoundFile(this, "action 4.wav"));
+  escamas2 = new Escamas("k2", new SoundFile(this, "action 3.wav"));
+  escamas3 = new Escamas("k3", new SoundFile(this, "action 2.wav"));
+  escamas4 = new Escamas("k4", new SoundFile(this, "action 1 B.wav"));
+
+
+
 
   /* start oscP5, listening for incoming messages at port 9999 */
   oscP5 = new OscP5(this, 9999);
@@ -57,18 +57,50 @@ void setup() {
   oscP5.plug(escamas1, "imu", "/k1/imuquat");
   oscP5.plug(escamas1, "realacc", "/k1/realacc");
 
+  
 
-  minim = new Minim(this);
 
-  // use the getLineOut method of the Minim object to get an AudioOutput object
-  out = minim.getLineOut();
-
-  // create a sine wave Oscil, set to 440 Hz, at 0.5 amplitude
-  wave = new Oscil( 440, 0.5f, Waves.SINE );
-  // patch the Oscil to the output
-  //wave.patch( out );
+  reset();
 }
 
+
+int colorPallet = 0;
+
+color colorPallets[][] = {
+  {#ffdfdf, #fbc1bc, #315b96, #233567, #3c4245}, 
+  {#4baea0, #b6e6bd, #f1f0cf, #f0c9c9, #d2fafb},
+  {#202040, #202060, #602080, #b030b0, #ecfcff}
+};
+
+
+void reset() {
+
+  for(int bg = 0; bg < backgrounds.length; bg++){
+    backgrounds[bg].stop();
+  }
+  
+  int newbg = (int) random(backgrounds.length);  
+  //backgrounds[newbg].loop();
+  //backgrounds[newbg].amp(0.6);
+  
+  
+
+  colorPallet = (int) random(colorPallets.length);
+
+
+  escamas1.reset(colorPallets[this.colorPallet][0]);
+  escamas2.reset(colorPallets[this.colorPallet][1]);
+  escamas3.reset(colorPallets[this.colorPallet][2]);
+  escamas4.reset(colorPallets[this.colorPallet][3]);
+
+  String rand = "";
+  for (int i = 0; i < 8; i++) {
+    rand += (char) random(97, 122);
+  }
+  
+  saveFrame("./images/"+rand + ".jpg");
+  background(colorPallets[this.colorPallet][4]);
+}
 
 
 
@@ -81,7 +113,7 @@ void plotAngle() {
   rect(100, 100, 100, 100);
 
   float rad = 25;
-  
+
   stroke(0);
   popStyle();
 }
@@ -97,16 +129,16 @@ void draw() {
   translate(width/2, height/2);
   fill(0);
 
-  
+
   escamas1.update();
   escamas1.dibujar();
 
   escamas2.update();
   escamas2.dibujar();
-  
+
   escamas3.update();
   escamas3.dibujar();
-  
+
   escamas4.update();
   escamas4.dibujar();
 
@@ -119,15 +151,8 @@ void draw() {
 
 void keyPressed()
 { 
-  String rand = "";
-  
-  for(int i = 0; i < 8; i++){
-    rand += (char) random(97, 122);
-  }
-    if(key == ' ') {
-      
-      saveFrame("./images/"+rand + ".jpg");
-      background(255);
-    }
 
+  if (key == ' ') {
+    reset();
+  }
 }
