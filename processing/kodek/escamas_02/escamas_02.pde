@@ -34,8 +34,8 @@ Escamas escamas4;
 
 
 void setup() {
-  //size(800, 600, P3D);
-  fullScreen(P3D);
+  size(1280, 800, P3D);
+  //fullScreen(P3D);
 
   escamas1 = new Escamas("k1");
   escamas2 = new Escamas("k2");
@@ -81,35 +81,17 @@ void plotAngle() {
   rect(100, 100, 100, 100);
 
   float rad = 25;
+  
   stroke(0);
-
-
-
-
   popStyle();
 }
 
-void soundControl()
-{
-  // usually when setting the amplitude and frequency of an Oscil
-  // you will want to patch something to the amplitude and frequency inputs
-  // but this is a quick and easy way to turn the screen into
-  // an x-y control for them.
-
-  //float amp = map( ypr.x, -180, 180, 1, 0.1 );
-  //wave.setAmplitude( amp );
-
-  //float freq = map( ypr.z, -180, 180, 110, 880 );
-  //wave.setFrequency( freq );
-}
 
 
 
 
 
 void draw() {
-
-  //background(255);
 
   pushMatrix();
   translate(width/2, height/2);
@@ -124,18 +106,12 @@ void draw() {
   
   escamas3.update();
   escamas3.dibujar();
-
   
   escamas4.update();
   escamas4.dibujar();
 
-
-  //soundControl();
-
   popMatrix();
-
   //plotAngle();
-
   noStroke();
   //fill(255,1);
   //rect(-10,-10, width+10, height+10);
@@ -143,32 +119,15 @@ void draw() {
 
 void keyPressed()
 { 
+  String rand = "";
   
-    if(key == ' ') background(255);
-    
-  switch( key )
-  {
-  case '1': 
-    wave.setWaveform( Waves.SINE );
-    break;
-
-  case '2':
-    wave.setWaveform( Waves.TRIANGLE );
-    break;
-
-  case '3':
-    wave.setWaveform( Waves.SAW );
-    break;
-
-  case '4':
-    wave.setWaveform( Waves.SQUARE );
-    break;
-
-  case '5':
-    wave.setWaveform( Waves.QUARTERPULSE );
-    break;
-
-  default: 
-    break;
+  for(int i = 0; i < 8; i++){
+    rand += (char) random(97, 122);
   }
+    if(key == ' ') {
+      
+      saveFrame("./images/"+rand + ".jpg");
+      background(255);
+    }
+
 }

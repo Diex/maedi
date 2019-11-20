@@ -1,76 +1,71 @@
 class Escamas {
 
+  // configuraciones y miembros de la piramide.  
   PVector pos = new PVector();
   PVector vel = new PVector();
 
-  float angulo;
-  Quaternion orientation = new Quaternion();
-  PVector origin = new PVector();
+  float largo = 10;
+  float maxLargo = 400;
+  float alpha = 1;
+  float minAlpha = 30;
+  float maxAlpha = 100;
+  float maxSpeed = 3;
 
-  float zmax = 600;
+  // data del sensor
+  String name; // me permite saber con que sensor estoy siendo controlada
+
+  Quaternion orientation = new Quaternion();
   PVector pAccel = new PVector();
+  float maxAcc = 500;
   float pAvg = 0.0;
 
-  float largo = 10;
+  // esto es para poner una referencia para el loop en el sentido Z basicamente
+  PVector origin = new PVector();
+  float zmax = 600;
 
-  float maxLargo = 200;
-  float maxAcc = 500;
-
-  float alpha = 1;
-  float minAlpha = 6;
-  float maxAlpha = 10;
-
-
-  float maxSpeed = 1;
-
-  String name;
-  
   Escamas(String name) {
     this.name = name;
-    angulo = random(360);
     origin.set(width/2, height/2, -3000);
     pos.set(random(-width/width), random(-height/height), -1000);
   }
 
-
-
-
-  void setAcceleration(float x, float y, float z) {
-
-    float dx = pAccel.x - x;
-    float dy = pAccel.y - y;
-    float dz = pAccel.z - z;
-
-
-    pAccel.set(x, y, z);
-
-    float avgAcc = (dx + dy + dz) / 3;
-    float dAvg = pAvg - abs(avgAcc);
-
-    pAvg = ease(avgAcc, pAvg, dAvg >= 0 ? 0.995 : 0.2);
-
-
-    //println(dx, dy, dz, "avg: ", map(abs(pAvg), 0, maxAcc, 0.0, 1.0));
+  void update() {    
+    setVelocity();    
+    pos.add(vel); 
+    println(name, pos, vel);
   }
-
-
 
   void dibujar() {
 
     limites();
 
-    largo = constrain( map(abs(pAvg), 0, maxAcc, 0, maxLargo), maxLargo/40, maxLargo);
-    alpha = constrain( map(abs(pAvg), maxAcc, 0, 0, maxAlpha), minAlpha, maxAlpha);
+    largo = constrain( map(abs(pAvg), 0, maxAcc, 0, maxLargo), maxLargo/10, maxLargo);
+    alpha = constrain( map(abs(pAvg), 0, maxAcc, 0, maxAlpha), minAlpha, maxAlpha);
 
     pushMatrix();
     pushStyle();
 
     noFill();
     strokeWeight(0.5);
-    stroke(0, alpha);
 
+    // https://colorhunt.co/palette/162807
+    switch(name) {
+    case "k1":
+      stroke(#003f5c, alpha);      
+      break;
+    case "k2":
+      stroke(#472b62, alpha);      
+      break;
+    case "k3":
+      stroke(#bc4873, alpha);      
+      break;
+    case "k4":
+      stroke(#fb5b5a, alpha);      
+      break;
+    }
 
     // base de la piramide
+    // sacado de aca: https://www.youtube.com/watch?v=4HP49caCuWY
     PVector a = new PVector(0, 0, 0); 
     PVector b = new PVector(1, 0, 0);
     PVector c = new PVector(0.5, 0.866, 0);
@@ -119,14 +114,12 @@ class Escamas {
     return current * (1 - factor) + prev * factor;
   }
 
-
-  void update() {    
-    setVelocity();    
-    pos.add(vel);
-  }
-
-
+  
   void setVelocity() {
+    // para calcular la velocidad en función de la orientación del sensor
+    // hay que obtener el vector "forward" del quaternion
+    // https://www.gamedev.net/forums/topic/56471-extracting-direction-vectors-from-quaternion/
+
     float[] axis = orientation.toAxisAngle();
     PVector r =  new PVector();
     r.x = 2 * ((-axis[1] * axis[2]) + (-axis[0] * -axis[3]));
@@ -153,37 +146,49 @@ class Escamas {
     };
   }
 
+
+  void setAcceleration(float x, float y, float z) {
+
+    float dx = pAccel.x - x;
+    float dy = pAccel.y - y;
+    float dz = pAccel.z - z;
+
+    pAccel.set(x, y, z);
+
+    float avgAcc = (dx + dy + dz) / 3;
+    float dAvg = pAvg - abs(avgAcc);
+
+    pAvg = ease(avgAcc, pAvg, dAvg >= 0 ? 0.996 : 0.2);
+  }
+
+
   public void imu(float quant_w, float quant_x, float quant_y, float quant_z) {
     orientation.set(quant_w, quant_x, quant_y, quant_z);
   }
 
+
   public void realacc(float quant_x, float quant_y, float quant_z) {
-    
+
     switch(name) {
-      case "k1":
+    case "k1":
       // K4 default: -8871.0 -578.0 3826.0
-        setAcceleration(quant_x +8871, quant_y+578, quant_z-3826);
+      setAcceleration(quant_x +8871, quant_y+578, quant_z-3826);
       break;
-      
-      case "k2":
+
+    case "k2":
       // K4 default: -8871.0 -578.0 3826.0
-        setAcceleration(quant_x +8871, quant_y+578, quant_z-3826);
+      setAcceleration(quant_x +8871, quant_y+578, quant_z-3826);
       break;
-      
-      case "k3":
+
+    case "k3":
       // K4 default: -8871.0 -578.0 3826.0
-        setAcceleration(quant_x +8871, quant_y+578, quant_z-3826);
+      setAcceleration(quant_x +8871, quant_y+578, quant_z-3826);
       break;
-      
-      case "k4":
+
+    case "k4":
       // K4 default: -8871.0 -578.0 3826.0
-        setAcceleration(quant_x +8871, quant_y+578, quant_z-3826);
+      setAcceleration(quant_x +8871, quant_y+578, quant_z-3826);
       break;
     }
-    
   }
-
-  //public void ypr(float quant_x, float quant_y, float quant_z) {
-  //  ypr.set(degrees(quant_x), degrees(quant_y), degrees(quant_z));    
-  //}
 }
